@@ -1,0 +1,12 @@
+FROM alpine:3.8
+
+RUN apk add curl
+RUN mkdir /build
+
+ADD handle_concurrent.sh /build/handle_concurrent.sh
+
+RUN echo "echo \$ENDPOINT && curl -X PATCH \$ENDPOINT/runner-scaling/increase" >> /build/entrypoint.sh
+RUN chmod 777 /build/entrypoint.sh
+RUN chmod 777 /build/handle_concurrent.sh
+
+CMD ["sh", "-c", "/build/entrypoint.sh && /build/handle_concurrent.sh"]
